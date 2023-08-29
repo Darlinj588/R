@@ -169,5 +169,13 @@ noms=c("edad","estatura","peso","sexo")
 names(data)=noms
 data
 #######################################
+attach(data)
 search()
+edad
+detach(data)
+
+
+
+
+
 estatura
