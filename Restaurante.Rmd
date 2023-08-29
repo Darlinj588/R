@@ -1,0 +1,147 @@
+---
+title: "Caso Restaurante"
+author: "Darlyn Iveth Puentes Jimenez"
+date: "2023-08-18"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Librerías a utilizar para analizar el caso 
+
+```{r}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+
+```
+
+## Llamado de la base de datos
+
+```{r}
+Restaurante<- read_excel("Restaurante, Power BI, Datos.xlsx")
+str(Restaurante)
+
+```
+
+## Descripcion general de la base
+
+Datos Nulos 
+```{r}
+any(is.na(Restaurante))
+mean(is.na(Restaurante))
+```
+
+
+```{r}
+str(Restaurante)
+colnames(Restaurante)
+dim(Restaurante)
+
+```
+
+ Para iniciar el análisis debemos evidenciar si existe una caída en las ventas para ello crearemos un nuevo data con las fechas y los precios asociados.
+```{r}
+Fechas= Restaurante %>% 
+  group_by(Fecha) %>%
+  summarise_at(vars(Precio),                 
+                list(name = sum))
+attach(Fechas)
+
+```
+ 
+ De forma gráfica es como sigue:
+ 
+```{r}
+ggplot(Fechas, aes(x = Fecha, y =name, color = Fecha)) +
+  geom_line()
+```
+
+Figura 1. Suma de Precios por fechas.
+
+
+En el gráfico se observa como las ventas aparentemente son contantes en un valor pero se observa fluctuaciones bien marcadas y la caída actual esta en enero de 2015, realizaremos un análisis a nivel general de la base.
+
+## La cantidad de clientes nuevos de acuerdo a la categoría que han consumido
+ 
+```{r}
+ggplot(data=Restaurante, aes(x=`Tipo de Cliente`,fill=Categoria)) +
+  geom_bar(position = "dodge")+theme(axis.text=element_text(angle=90))+
+  xlab("Tipo de cliente") + ylab("Número de observaciones")
+
+```
+
+ Figura 2. Categoría de consumo de acuerdo al tipo de cliente.
+ 
+ Se puede observar que los vinos es menos solicitado tanto en clientes nuevos y repetido,también  la categoría mas consumida es la bebida no alcohol, eso se puede observar en el siguiente gráfico
+ 
+```{r}
+ggplot(data=Restaurante, aes(x=Categoria,fill=Categoria)) +
+  geom_bar()+ theme(axis.text=element_text(angle=90))
+
+```
+
+ Figura 3. Categoria mas consumida.
+ 
+## Proporción de clientes nuevos y repetidos 
+```{r}
+
+ggplot(data=Restaurante,mapping = aes(x=factor(1),fill=`Tipo de Cliente`))+
+  geom_bar(position="fill")+
+coord_polar(theta="y")+
+  labs(x="",y="")
+
+```
+ 
+ Figura 4. Proporcion de Tpo de Cliente.
+ 
+ Poquito menos de tres cuartas partes son clientes nuevos que consumen producto del restaurante.
+ 
+```{r}
+ggplot(data = Restaurante, aes(x = Categoria, y =Precio, group = Atendió)) + 
+  geom_line(aes(color = Categoria))+ theme(axis.text = element_text(angle = 90))
+
+```
+ 
+ Figura 5. Precios por categorías
+ 
+ En la salida anterior se observa que los vinos son los de mayor precio y recordemos que son los menos solicitados por los clientes.
+ 
+ 
+ 
+```{r}
+Restaurante$Propina=as.factor(Restaurante$Propina)
+ggplot(data=Restaurante, aes(x=`Tipo de Cliente`,fill=Propina)) +
+  geom_bar(position = "dodge")+theme(axis.text=element_text(angle=90))+
+  xlab("Tipo de cliente") + ylab("Número de observaciones")
+```
+
+Figura 6 . Propina de los clientes.
+
+Los clientes nuevos son los que dejan mayor propina y el cliente repetido deja las propinas mas bajas. 
+
+
+```{r}
+Fechas= Restaurante %>% 
+  group_by(Fecha,`Tipo de Cliente`) %>%
+  summarise_at(vars(Precio),                 
+                list(name = sum))
+attach(Fechas)
+
+ggplot(Fechas, aes(x = Fecha, y =name, color =`Tipo de Cliente`)) +
+  geom_line()
+
+```
+ 
+ 
+ 
+ 
+ Figura 7. Tipo de cliente de acuerdo a la fecha de consumo.
+ 
+ Se observa como los clientes nuevos son los que generan las mayores ventas, recordemos que son la mayor proporción de clientes. 
+ 
+## conclusión:
+
+Las ventas del restaurante se observan que hay fluctuaciones marcadas constantes en las fechas dadas, las recomendaciones que se le pueden dar al dueño para realizar cambios significativos para la mejor de esta tendencia es evaluar de forma general la distribución de menú en el restaurante ya que por ejemplo la categoría de vinos es la menos solicitada por ambos tipos de cliente y es la mas costosa, en este caso, se podría recortar la variedad de vinos y aumentar variedad en bebidas no alcohólicas y cervezas puesto que son las de mas consumo por los clientes, ademas estimular a los clientes repetidos con promociones ya que son los que están en menor numero que visitan el restaurante, e incentivar a los meseros a un mejor servicio al cliente. 
