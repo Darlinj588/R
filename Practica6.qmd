@@ -1,0 +1,80 @@
+---
+title: "Práctica -Importación y exportación de datos en R."
+author: "Darlyn Iveth Puentes Jimenez"
+format: pdf
+editor: visual
+---
+1.	USO DE LA FUNCIÓN READ.TABLE()
+
+```{r}
+entrada=read.table("datos01.dat",header=T)
+entrada
+```
+
+```{r}
+entrada1=read.table("datos01.txt",header=T)
+entrada1
+```
+
+No existe diferencia entre ambos archivos a la hora de leerlos.
+
+Leerlos datos contenidos en el archivo “mexico.dat”
+
+```{r}
+mexico=read.table("mex.dat",header=T)
+head(mexico)
+```
+
+2.	USO DE LA FUNCIÓN SCAN().
+
+```{r}
+help(scan)
+```
+
+Leer sólo las dos primeros objetos o columnas del archivo
+
+```{r}
+edat1=scan("datos01.dat",list(Edad=0,ESTATURA=0,PESO=0,SEXO=""),skip=1,flush=TRUE,quiet=TRUE)
+edat1
+```
+
+Funcion cat()
+
+```{r}
+cat("TITULO LINEA EXTRA","2 3 5 7","11 13 17",file="datos02.txt",sep = "\n")
+```
+
+```{r}
+pp=scan("datos02.txt", skip=1, quiet = TRUE)
+pp
+```
+2.	USO DE LA FUNCIÓN READ.CSV()
+```{r}
+hojaR=read.csv("productos.csv",sep = ";",strip.white = TRUE)
+hojaR
+```
+Tipo de objeto 
+
+```{r}
+is.matrix(hojaR)
+is.list(hojaR)
+is.data.frame(hojaR)
+```
+
+Accediendo a la componente Producto de hojaR con: 
+```{r}
+hojaR$producto
+```
+```{r}
+is.vector(hojaR$producto)
+is.factor(hojaR$producto)
+```
+
+```{r}
+is.vector(hojaR$cantidad.S1)
+is.factor(hojaR$cantidad.S1)
+```
+
+
+
+
