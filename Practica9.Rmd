@@ -1,0 +1,97 @@
+---
+title: "Espacios muestrales"
+author: "Darlyn Iveth Puentes Jimenez"
+date: "2023-09-19"
+output: word_document
+---
+#Funcion Sample
+
+
+```{r}
+moneda=c("cara","corona")
+n=10
+lanzamiento=sample(moneda,n,replace = TRUE)
+lanzamiento
+```
+```{r}
+espacio=1:54
+n=6
+n1=sample(espacio,n,replace=TRUE)
+n2=sample(espacio,n,replace=FALSE)
+n1
+n2
+```
+
+```{r}
+espacio=as.vector(outer(1:6,1:6,paste))
+n=5
+muestra=sample(espacio,n,replace=T)
+muestra
+```
+
+
+# Experimento de cartas
+
+```{r}
+naipes=paste(rep(c("A",2:10,"J","Q","K"),4),c("OROS","COPAS","DIAMANTES","BASTOS"))
+n=9
+cartas=sample(naipes,n)
+cartas
+```
+
+Generar una muestra aleatoria  de 120 elementos con los números del 1 al 6, la prob de elegir cada elemento es:
+0.5,0.25,0.15,0.04,0.03,0.003
+
+
+```{r}
+v=1:6
+n=120
+muestra =sample(v,n,replace=TRUE, c(0.5,0.25,0.15,0.04,0.03,0.003))
+muestra 
+
+
+```
+cree una función que reciba dos números de 1 a 50 inclusive, la funcion retornara el espacio formado por los números divisibles entre 7, luego
+debera extraer una muestra a aleatoria de estos números con reemplazo.
+
+
+```{r}
+n=12
+
+
+
+
+
+
+m=function(){
+  numero =1:500
+  div=numero[numero%%7==0]
+
+  return (div)
+  
+}
+#dentro de un for y luego de un if 
+x=m()
+mues=sample(x,n,replace = TRUE)
+```
+
+
+
+
+
+
+
+# 
+
+
+
+
+
+  
+
+
+
+
+
+
+
