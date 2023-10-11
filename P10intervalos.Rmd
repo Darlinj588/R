@@ -1,0 +1,344 @@
+---
+title: "Practica10"
+author: "Darlyn Iveth Puentes Jimenez"
+date: "2023-09-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+n=50
+med=32
+dev=6
+nc=0.9
+error.est=dev/sqrt(n)
+margen.error=1.644854*error.est
+lim=med-margen.error
+limin=med+margen.error
+lim
+limin
+
+```
+
+```{r}
+library(BSDA)
+zsum.test(mean.x=32,sigma.x = 6,n.x = 50,conf.level = 0.90)
+```
+```{r}
+zsum.test(mean.x = 81,sigma.x = 5.2,n.x = 25, mean.y = 76,sigma.y = 3.4,n.y = 36,conf.level = 0.99)
+```
+
+muestra de 35 y quiere estimar la calificacion, con base a la experiencia se conoce que la desviacion tipica es de 2.01. E;l promedio de nota de los 35 es de 4.9 contruya 3 intervalos de confianza uno de 90, 95, y 99
+```{r}
+zsum.test(mean.x = 35, sigma.x = 2.01, n.x = 35, conf.level = 0.90)
+zsum.test(mean.x = 35, sigma.x = 2.01, n.x = 35, conf.level = 0.95)
+zsum.test(mean.x = 35, sigma.x = 2.01, n.x = 35, conf.level = 0.99)
+```
+
+
+
+# Muestras Pequenas, desviacion tipica desconocida(no hay datos historicos entonces se calcula de la muestra)
+
+```{r}
+qt(0.05,9) 
+# le da la probabilidad
+#dt da probablidad
+
+```
+
+
+
+T.test
+```{r}
+url='https://raw.githubusercontent.com/fhernanb/datos/master/medidas_cuerpo'
+datos=read.table(file=url, header = T)
+datos
+nrow(datos)
+hombres=datos[datos$sexo=="Hombre",]
+hombres
+```
+
+```{r}
+par(mfrow=c(1,2))#1 fila 2 columnas
+
+require(car)  # Debe instalar antes el paquete car
+qqPlot(hombres$altura, pch=19,
+       main='QQplot para la altura de hombres',
+       xlab='Cuantiles teóricos',
+       ylab='Cuantiles muestrales')
+
+hist(hombres$altura,freq = TRUE,
+      main="Histrograma para la altura", 
+       xlab="Cuantiles teoricos", 
+       ylab = "Cuantiles Muestrales", col = "mediumturquoise")
+```
+NO ES NORMAL PORQUE SE SALE DEL INTERVALO ALGUNOS VALORES
+
+```{r}
+#prop.test(x, n, p=null,alternative = c("two sided","less","greater"),conf.level =0.95 )
+#prop.test
+```
+# que es p valor- nivel observado 
+
+
+```{r}
+prop.test(x=275,n=500,conf.level = 0.95)
+```
+IC diferencia de proporciones 
+ 
+```{r}
+prop.test(x=c(75,80),n=c(1500,2000),conf.level = 0.90)
+```
+o es maquina o el proceso esta bien definido. IC bien peque el cero esta incluido (posiblemente sigue igual)
+EFECTOS ALEATORIOS
+
+
+
+
+############################
+```{r}
+set.seed(4)
+fum=rbinom(n=1,size=100,prob = 0.295)
+p1=fum/100
+prop.test(x=fum,n=100,conf.level = 0.95)
+
+```
+
+
+
+```{r}
+pt=0.43
+n=799
+x1=799*0.460
+x2=799*pt
+prop.test(x=x1,n=n,conf.level = 0.95)
+prop.test(x=x2,n=n,conf.level = 0.95)
+```
+intervalo con T Student 
+```{r, message=FALSE}
+library(simFrame)
+a=data("eusilcP")
+attach(eusilcP)
+dato.hombres=eqIncome[gender=="male"]
+dato.mujeres=eqIncome[gender=="female"]
+#hist(dato.hombres)
+t.test(dato.hombres,conf.level = 0.95)
+t.test(dato.mujeres,conf.level = 0.95)
+```
+## IC CON EL INTERVALO CON DISTRIBUCION NORMAL 
+
+```{r}
+library(BSDA)
+s=sqrt(var(dato.hombres))
+zsum.test(mean.x = mean(dato.hombres),sigma.x =s, n.x =nrow(dato.hombres),conf.level = 0.95)
+```
+
+## diferencias de medias
+
+```{r}
+s1=sqrt(var(dato.mujeres))
+zsum.test(mean.x = mean(dato.hombres),sigma.x =s, n.x=nrow(dato.hombres),
+          mean.y=mean(dato.mujeres),sigma.y=s1,n.y=nrow(dato.mujeres),conf.level = 0.95)
+```
+
+
+## Distribuciones de probabilidad
+### binomial
+
+Identificar la distribución del numero de acierto 
+Un examen de estadística consiste en un test de 10 preguntas de respuesta múltiple con 4 posibles.........
+
+
+```{r}
+n=10 
+p= 1/4
+```
+
+
+```{r}
+x=data.frame(x=0:10, y=round(dbinom(0:10,n,p),2))#distribución de probabilidad binomial 
+```
+
+
+```{r}
+#Acumulada
+tabla=cbind(x, y=pbinom(x,n,p))
+
+
+```
+
+
+
+#aciertos 
+```{r}
+1-pbinom(4,10,0.25)
+sum(dbinom(5:10,10,0.25))
+pbinom(5,10,0.25)
+sum(dbinom(1:10,10,0.25))#al menos 
+```
+
+
+
+### poisson 
+```{r}
+1-dpois(0,4)
+
+```
+
+
+```{r}
+x=0:5
+lambda=4
+tabla=cbind(x,y=dpois(x,lambda))
+tabla
+```
+
+
+
+
+
+```{r}
+par(mfrow=c(1,2))
+x=0:12
+lambda=4
+plot(x,dpois(x,lambda),type="h",xlab="numero de casos",ylab="F(x)", col="green")
+plot(x,ppois(x,lambda),type="h",xlab="numero de casos",ylab="F(x)",col="red")
+```
+
+## Distribucion Geometrica 
+
+
+```{r}
+p=0.09
+dgeom(5,0.09)
+```
+
+```{r}
+pgeom(7,0.09)
+```
+## Distribucion hipergeometrica
+
+```{r}
+x=0:8
+Prob=dhyper(x,35,15,8)
+plot(cbind(x,Prob))
+```
+
+## distribuciones Continuas
+
+# distribucion uniforme 
+```{r}
+
+par(mfrow=c(1,2))
+x=seq(1,7,0.01)
+a=1
+b=7
+plot(x,dunif(x,a,b), type = "l",xlab = "x",ylab = "Funcion de densidad uniforme",col="red")
+plot(x,punif(x,a,b), type = "l",xlab = "x",ylab = "Funcion de densidad uniforme",col="red")
+```
+
+
+generar una muestra de 10000 tiempos de retrazo 
+```{r}
+n=10000
+muestra=runif(n,1,7)
+
+#par(mfrow=c(1,1))
+hist(muestra,xlab="x",ylab="frecuencia Relativa", main="PROBABILIDADES", prob=T, col="purple")
+lines(density(muestra),col="red")
+me=(a+b)/2
+desv=sqrt((b-a)^2/12)
+sd(muestra)
+desv
+```
+# distribucion normal 
+
+el gasto mensual 
+```{r}
+par(mfrow=c(1,2))
+mu=1500
+dev=167
+x=seq(mu-4*dev,mu+4*dev)
+plot(x,dnorm(x,mu,dev),type="l",xlab="Gasto mensual")
+plot(x,pnorm(x,mu,dev),type="l",xlab="Gasto mensual")
+```
+
+```{r}
+y=1-pnorm(1700,mu,dev)
+y*100
+```
+
+```{r}
+cat(100*pnorm(1600,mu,dev)-pnorm(1200,mu,dev),"%")
+```
+d)
+```{r}
+qnorm(0.1,mu,dev)
+```
+f)
+obtener el gasto minimo del 5% 
+
+
+```{r}
+qnorm(0.95,mu,dev)
+```
+```{r}
+d=(1:9)/10
+cbind(d,x=qnorm(d,qnorm(d,mu,dev)))
+```
+### Distribucion Exponencial
+
+
+el tiempo de servicio medio de un cajero en un supermercado es de 3 minutos
+
+
+```{r}
+par(mfrow=c(1,2))
+x=seq(0,10,0.1)
+plot(x,dexp(x,rate = 1/3),type="l")
+```
+
+
+
+```{r}
+1-pexp(4,rate = 1/3)
+```
+
+
+## Distribucion Gamma
+
+
+
+```{r}
+x=seq(0,12,0.1)
+a=1
+b=1
+y=dgamma(x,a,b)
+plot(x,y,type = "l")
+
+text(10,1.0-a/15,paste("a=",toString(a),col=a))
+for(a in c(2,3,4,5,6)){
+  y=dgamma(x,a,b)
+  lines(x,y,col=a)
+  text(10,1.0-a/15,paste("a=",toString(a),col=a))
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
